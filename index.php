@@ -35,6 +35,138 @@ $productsDrinks = [
     ['name' => 'Ice-tea', 'price' => 3],
 ];
 
-$totalValue = 0;
+
+$emailAlert = "";
+$streetAlert = "";
+$strnumAlert = "";
+$cityAlert = "";
+$zipAlert = "";
+
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (empty($_POST["email"])) {
+        $emailAlert = "Email Required </br>";
+    } else {
+        $emailAlert = "";
+        $email = $_POST['email'];;
+    }
+
+    if (empty($_POST["street"])) {
+        $streetAlert = "Street Required </br>";
+    } else {
+        $streetAlert = "";
+        $street = $_POST['street'];
+        $_SESSION["street"] = $_POST['street'];
+    }
+
+    if (empty($_POST["streetnumber"])) {
+        $strnumAlert = "strnum Required </br>";
+    } else {
+        $strnumAlert = "";
+        $streetnumber = $_POST['streetnumber'];
+        $_SESSION["streetnumber"] = $_POST['streetnumber'];
+    }
+
+    if (empty($_POST["city"])) {
+        $cityAlert = "city Required </br>";
+    } else {
+        $cityAlert = "";
+        $city = $_POST['city'];
+        $_SESSION["city"] = $_POST['city'];
+    }
+
+    if (empty($_POST["zipcode"])) {
+        $zipAlert = "zipcode Required </br>";
+    } else {
+        $zipAlert = "";
+        $zip = $_POST['zipcode'];
+        $_SESSION["zipcode"] = $_POST['zipcode'];
+    }
+}
+if (!isset($_POST['email'])) {
+    $_POST['email'] = "";
+}
+
+if (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+    $emailFormat = "";
+} else {
+    $_POST['email'] = "";
+    $emailFormat = "This is not a valid email address </br>";
+}
+if (!isset($_POST['zipcode'])) {
+    $_POST['zipcode'] = "";
+}
+
+if (is_numeric($_POST['zipcode'])) {
+    $nanZip = "";
+} else {
+    $nanZip = "Zip needs to be numeric </br>";
+}
+
+
+if (!isset($_POST['streetnumber'])) {
+    $_POST['streetnumber'] = "";
+}
+if (is_numeric($_POST['streetnumber'])) {
+    $nanStrnum = "";
+} else {
+    $nanStrnum = "Streetnumber needs to be numeric </br>";
+}
+
+//implement array if time allows
+$delivery = "";
+$okAlert = "";
+
+if ($emailAlert == "" && $streetAlert == "" && $strnumAlert == "" && $cityAlert == "" && $zipAlert == "" && $nanStrnum == ""
+    && $emailFormat == "") {
+    $okAlert = "form sent!";
+
+}
+
+if (!isset($_GET['food'])) {
+    $_GET['food'] = 1;
+}
+
+if ($_GET["food"] == 1) {
+    $products = $products;
+} else {
+    $products = $productsDrinks;
+}
+
+
+$checked = [];
+
+if (!empty($_POST["products"])) {
+    $checked = $_POST["products"];
+}
+
+var_dump($checked);
+
+$sumprice = 0;
+for ($i = 0; $i < count($products); $i++) {
+    if (isset($checked[$i])) {
+        echo $products[$i]["price"] . "<br/>";
+        $sumprice += $products[$i]["price"];
+    }
+}
+echo $sumprice;
+
+$orderEmpty = "";
+if (empty($checked)) {
+    $orderEmpty = "You didn't order anything!";
+}
+
+$delivery = "normal";
+
+
+if (empty($_POST["express"])) {
+    $delivery = "normal";
+
+} else {
+    $delivery = "express";
+
+}
+
 
 require 'form-view.php';
+
