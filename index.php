@@ -113,6 +113,23 @@ if (is_numeric($_POST['streetnumber'])) {
     $nanStrnum = "Streetnumber needs to be numeric </br>";
 }
 
+
+
+
+$checked = [];
+
+if (!empty($_POST["products"])) {
+    $checked = $_POST["products"];
+}
+$sumprice = 0;
+for ($i = 0; $i < count($products); $i++) {
+    if (isset($checked[$i])) {
+        $sumprice += $products[$i]["price"];
+    }
+}
+echo $sumprice;
+
+
 //implement array if time allows
 $delivery = "";
 $okAlert = "";
@@ -120,6 +137,12 @@ $okAlert = "";
 if ($emailAlert == "" && $streetAlert == "" && $strnumAlert == "" && $cityAlert == "" && $zipAlert == "" && $nanStrnum == ""
     && $emailFormat == "") {
     $okAlert = "form sent!";
+    if (!isset($_COOKIE['priceTotal'])) {
+        setcookie("priceTotal", strval($sumprice));
+    } else {
+        setcookie("priceTotal", strval($sumprice + $_COOKIE['priceTotal']));
+    }
+
 
 }
 
@@ -134,22 +157,10 @@ if ($_GET["food"] == 1) {
 }
 
 
-$checked = [];
 
-if (!empty($_POST["products"])) {
-    $checked = $_POST["products"];
-}
 
-var_dump($checked);
 
-$sumprice = 0;
-for ($i = 0; $i < count($products); $i++) {
-    if (isset($checked[$i])) {
-        echo $products[$i]["price"] . "<br/>";
-        $sumprice += $products[$i]["price"];
-    }
-}
-echo $sumprice;
+
 
 $orderEmpty = "";
 if (empty($checked)) {

@@ -98,7 +98,7 @@
         <button type="submit" class="btn btn-primary">Order!</button>
     </form>
 
-    <footer>You already ordered <strong>&euro; <?php echo $sumprice ?></strong> in food and drinks.</footer>
+    <footer>You already ordered <strong>&euro; <?php echo $_COOKIE['priceTotal']; ?></strong> in food and drinks.</footer>
 </div>
 
 <style>
