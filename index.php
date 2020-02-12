@@ -8,7 +8,8 @@ error_reporting(E_ALL);
 //we are going to use session variables so we need to enable sessions
 session_start();
 
-function whatIsHappening() {
+function whatIsHappening()
+{
     echo '<h2>$_GET</h2>';
     var_dump($_GET);
     echo '<h2>$_POST</h2>';
@@ -48,7 +49,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $emailAlert = "Email Required </br>";
     } else {
         $emailAlert = "";
-        $email = $_POST['email'];;
+        $email = $_POST['email'];
+        $_SESSION["email"] = $_POST['email'];
     }
 
     if (empty($_POST["street"])) {
@@ -87,6 +89,7 @@ if (!isset($_POST['email'])) {
     $_POST['email'] = "";
 }
 
+$emailFormat = "";
 if (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
     $emailFormat = "";
 } else {
@@ -96,6 +99,8 @@ if (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 if (!isset($_POST['zipcode'])) {
     $_POST['zipcode'] = "";
 }
+
+$nanZip = "";
 
 if (is_numeric($_POST['zipcode'])) {
     $nanZip = "";
@@ -107,13 +112,13 @@ if (is_numeric($_POST['zipcode'])) {
 if (!isset($_POST['streetnumber'])) {
     $_POST['streetnumber'] = "";
 }
+
+$nanStrnum = "";
 if (is_numeric($_POST['streetnumber'])) {
     $nanStrnum = "";
 } else {
     $nanStrnum = "Streetnumber needs to be numeric </br>";
 }
-
-
 
 
 $checked = [];
@@ -127,23 +132,38 @@ for ($i = 0; $i < count($products); $i++) {
         $sumprice += $products[$i]["price"];
     }
 }
-echo $sumprice;
 
 
 //implement array if time allows
 $delivery = "";
 $okAlert = "";
-
+$delivery = "";
+$orderEmpty = "";
+$bootstrapAlert = "";
+if (empty($checked)) {
+    $orderEmpty = "You didn't order anything!";
+}
 if ($emailAlert == "" && $streetAlert == "" && $strnumAlert == "" && $cityAlert == "" && $zipAlert == "" && $nanStrnum == ""
-    && $emailFormat == "") {
+    && $emailFormat == "" && $orderEmpty == "") {
+    $bootstrapAlert = '';
     $okAlert = "form sent!";
     if (!isset($_COOKIE['priceTotal'])) {
         setcookie("priceTotal", strval($sumprice));
     } else {
+        $totalPrice = $_COOKIE['priceTotal'] + $sumprice;
         setcookie("priceTotal", strval($sumprice + $_COOKIE['priceTotal']));
     }
 
+    $delivery = "Delivery: normal";
+    if (empty($_POST["express"])) {
+        $delivery = "Delivery: normal";
+    } else {
+        $delivery = "Delivery: express";
+    }
 
+} else {
+    $okAlert = "";
+    $bootstrapAlert = 'class="alert alert-danger" role="alert"';
 }
 
 if (!isset($_GET['food'])) {
@@ -158,25 +178,6 @@ if ($_GET["food"] == 1) {
 
 
 
-
-
-
-
-$orderEmpty = "";
-if (empty($checked)) {
-    $orderEmpty = "You didn't order anything!";
-}
-
-$delivery = "normal";
-
-
-if (empty($_POST["express"])) {
-    $delivery = "normal";
-
-} else {
-    $delivery = "express";
-
-}
 
 
 require 'form-view.php';
