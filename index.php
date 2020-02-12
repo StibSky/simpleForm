@@ -133,7 +133,6 @@ for ($i = 0; $i < count($products); $i++) {
     }
 }
 
-
 //implement array if time allows
 $delivery = "";
 $okAlert = "";
@@ -147,6 +146,8 @@ if ($emailAlert == "" && $streetAlert == "" && $strnumAlert == "" && $cityAlert 
     && $emailFormat == "" && $orderEmpty == "") {
     $bootstrapAlert = '';
     $okAlert = "form sent!";
+
+
     if (!isset($_COOKIE['priceTotal'])) {
         setcookie("priceTotal", strval($sumprice));
     } else {
@@ -160,6 +161,14 @@ if ($emailAlert == "" && $streetAlert == "" && $strnumAlert == "" && $cityAlert 
     } else {
         $delivery = "Delivery: express";
     }
+
+    if ($delivery == "Delivery: normal") {
+        $delivery = $delivery." expected at ". date('h:i:s A', strtotime('+ 2 hours'));
+    } elseif ($delivery == "Delivery: express") {
+        $delivery = $delivery." expected at ". date('h:i:s A', strtotime('45 minutes'));
+    }
+
+
 
 } else {
     $okAlert = "";
